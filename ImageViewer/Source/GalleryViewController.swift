@@ -417,10 +417,18 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
     }
 
     fileprivate func layoutScrubber() {
-
-        scrubber.bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: self.view.bounds.width, height: 40))
+        scrubber.bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: self.view.bounds.width - scrubberRotationInset(), height: 40))
         scrubber.center = self.view.boundsCenter
         scrubber.frame.origin.y = (footerView?.frame.origin.y ?? self.view.bounds.maxY) - scrubber.bounds.height
+    }
+
+    /// Accommodate for scrubber's width on landscape screens by narrowing it
+    func scrubberRotationInset() -> CGFloat {
+        if UIDevice.current.orientation.isLandscape {
+            return 100
+        } else {
+            return 0
+        }
     }
 
     @objc fileprivate func deleteItem() {
