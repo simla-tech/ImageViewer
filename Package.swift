@@ -26,7 +26,7 @@
 import PackageDescription
 
 let package = Package(name: "ImageViewer",
-                      platforms: [.iOS(.v12)],
+                      platforms: [.iOS(.v14)],
                       products: [.library(name: "ImageViewer", targets: ["ImageViewer"])],
                       targets: [.target(name: "ImageViewer",
                                         path: "ImageViewer/Source")],
