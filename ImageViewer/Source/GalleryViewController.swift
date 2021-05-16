@@ -169,8 +169,6 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         self.modalPresentationStyle = .overFullScreen
         self.dataSource = pagingDataSource
 
-        UIApplication.applicationWindow.windowLevel = (statusBarHidden) ? UIWindow.Level.statusBar + 1 : UIWindow.Level.normal
-
         NotificationCenter.default.addObserver(self, selector: #selector(GalleryViewController.rotate), name: UIDevice.orientationDidChangeNotification, object: nil)
 
         if continueNextVideoOnFinish {
@@ -187,6 +185,9 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         page(toIndex: currentIndex+1)
     }
 
+    open override var prefersStatusBarHidden: Bool {
+        return statusBarHidden
+    }
 
     fileprivate func configureOverlayView() {
 
@@ -248,6 +249,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
 
     open override func viewDidLoad() {
         super.viewDidLoad()
+        modalPresentationCapturesStatusBarAppearance = true
 
         if #available(iOS 11.0, *) {
             if (statusBarHidden || UIScreen.hasNotch) {
@@ -280,7 +282,6 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
     }
 
     fileprivate func presentInitially() {
-
         isAnimating = true
 
         ///Animates decoration views to the initial state if they are set to be visible on launch. We do not need to do anything if they are set to be hidden because they are already set up as hidden by default. Unhiding them for the launch is part of chosen UX.
@@ -549,14 +550,14 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
 
     /// Invoked when closed programmatically
     open func close() {
-
         closeDecorationViews(programmaticallyClosedCompletion)
+        setNeedsStatusBarAppearanceUpdate()
     }
 
     /// Invoked when closed via close button
     @objc fileprivate func closeInteractively() {
-
         closeDecorationViews(closedCompletion)
+        setNeedsStatusBarAppearanceUpdate()
     }
 
     fileprivate func closeDecorationViews(_ completion: (() -> Void)?) {
