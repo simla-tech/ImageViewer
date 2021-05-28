@@ -9,9 +9,8 @@
 import UIKit
 
 extension UIApplication {
-
     static var applicationWindow: UIWindow {
-        return UIApplication.shared.keyWindow!
+        return UIApplication.shared.windows.first { $0.isKeyWindow }!
     }
 
     static var isPortraitOnly: Bool {
