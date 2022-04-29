@@ -18,7 +18,12 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
     //UI
     public var itemView = T()
     let scrollView = UIScrollView()
-    let activityIndicatorView = UIActivityIndicatorView(style: .white)
+    
+    let activityIndicatorView: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(style: .medium)
+        view.color = .white
+        return view
+    }()
 
     //DELEGATE / DATASOURCE
     weak public var delegate:                 ItemControllerDelegate?
@@ -355,8 +360,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
         let maxIndex = self.itemCount - 1
 
         let swipeToDismissCompletionBlock = { [weak self] in
-
-            UIApplication.applicationWindow.windowLevel = UIWindow.Level.normal
+            UIApplication.applicationWindow?.windowLevel = UIWindow.Level.normal
             self?.swipingToDismiss = nil
             self?.delegate?.itemControllerDidFinishSwipeToDismissSuccessfully()
         }
@@ -423,9 +427,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
             completion?(finished)
 
             if finished {
-
-                UIApplication.applicationWindow.windowLevel = UIWindow.Level.normal
-
+                UIApplication.applicationWindow?.windowLevel = UIWindow.Level.normal
                 self?.isAnimating = false
             }
         })

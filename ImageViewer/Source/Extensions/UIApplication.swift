@@ -9,8 +9,16 @@
 import UIKit
 
 extension UIApplication {
-    static var applicationWindow: UIWindow {
-        return UIApplication.shared.windows.first { $0.isKeyWindow }!
+    
+    static var applicationWindow: UIWindow? {
+        guard let windowScene =  UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first else {
+            return nil
+        }
+        if #available(iOS 15.0, *) {
+            return windowScene.keyWindow
+        } else {
+            return windowScene.windows.first(where: \.isKeyWindow)
+        }
     }
 
     static var isPortraitOnly: Bool {
@@ -19,4 +27,5 @@ extension UIApplication {
 
         return !(orientations.contains(.landscapeLeft) || orientations.contains(.landscapeRight) || orientations.contains(.landscape))
     }
+    
 }

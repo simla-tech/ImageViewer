@@ -604,8 +604,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         self.modalTransitionStyle = .crossDissolve
 
         self.dismiss(animated: animated) {
-
-            UIApplication.applicationWindow.windowLevel = UIWindow.Level.normal
+            UIApplication.applicationWindow?.windowLevel = UIWindow.Level.normal
             completion?()
         }
     }

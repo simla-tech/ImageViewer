@@ -11,13 +11,13 @@ import UIKit
 extension UIView {
 
     public var boundsCenter: CGPoint {
-
         return CGPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
     }
 
     func frame(inCoordinatesOfView parentView: UIView) -> CGRect {
-
-        let frameInWindow = UIApplication.applicationWindow.convert(self.bounds, from: self)
+        guard let frameInWindow = UIApplication.applicationWindow?.convert(self.bounds, from: self) else {
+            return parentView.frame
+        }
         return parentView.convert(frameInWindow, from: UIApplication.applicationWindow)
     }
 

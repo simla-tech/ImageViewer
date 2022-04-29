@@ -103,7 +103,9 @@ private func rotationAngleToMatchDeviceOrientation(_ orientation: UIDeviceOrient
 }
 
 func rotationAdjustedBounds() -> CGRect {
-    let window = UIApplication.applicationWindow
+    guard let window = UIApplication.applicationWindow else {
+        return .zero
+    }
 
     if UIApplication.isPortraitOnly {
 
