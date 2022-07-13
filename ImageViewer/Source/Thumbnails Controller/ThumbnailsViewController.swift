@@ -51,10 +51,9 @@ class ThumbnailsViewController: UICollectionViewController, UICollectionViewDele
             self?.view.setNeedsLayout()
             self?.view.layoutIfNeeded()
 
-            })
-        { [weak self] finished  in
+        }, completion: { [weak self] _  in
             self?.isAnimating = false
-        }
+        })
     }
 
     override func viewDidLoad() {
@@ -108,7 +107,7 @@ class ThumbnailsViewController: UICollectionViewController, UICollectionViewDele
 
         case .image(let fetchImageBlock):
 
-            fetchImageBlock() { image in
+            fetchImageBlock { image in
 
                 if let image = image {
 
@@ -118,7 +117,7 @@ class ThumbnailsViewController: UICollectionViewController, UICollectionViewDele
 
         case .video(let fetchImageBlock, _):
 
-            fetchImageBlock() { image in
+            fetchImageBlock { image in
 
                 if let image = image {
 
@@ -128,7 +127,7 @@ class ThumbnailsViewController: UICollectionViewController, UICollectionViewDele
 
         case .custom(let fetchImageBlock, _):
 
-            fetchImageBlock() { image in
+            fetchImageBlock { image in
 
                 if let image = image {
 

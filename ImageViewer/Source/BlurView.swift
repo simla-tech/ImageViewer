@@ -29,7 +29,7 @@ class BlurView: UIView {
         didSet { colorView.backgroundColor = overlayColor }
     }
 
-    let blurringViewContainer = UIView() //serves as a transparency container for the blurringView as it's not recommended by Apple to apply transparency directly to the UIVisualEffectsView
+    let blurringViewContainer = UIView() // serves as a transparency container for the blurringView as it's not recommended by Apple to apply transparency directly to the UIVisualEffectsView
     let blurringView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
     let colorView = UIView()
 

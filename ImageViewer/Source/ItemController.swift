@@ -14,7 +14,7 @@ public protocol ItemController: AnyObject {
 
     var index: Int { get }
     var isInitialController: Bool { get set }
-    var delegate:                 ItemControllerDelegate? { get set }
+    var delegate: ItemControllerDelegate? { get set }
     var displacedViewsDataSource: GalleryDisplacedViewsDataSource? { get set }
 
     func fetchImage()

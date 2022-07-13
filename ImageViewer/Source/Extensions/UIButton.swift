@@ -39,7 +39,7 @@ extension UIButton {
         let playShapeHighlighted = CAShapeLayer.playShape(UIColor.red.withAlphaComponent(0.7), triangleEdgeLength: triangleEdgeLength).toImage()
         button.setImage(playShapeHighlighted, for: .highlighted)
 
-        ///the geometric center of equilateral triangle is not the same as the geometric center of its smallest bounding rect. There is some offset between the two centers to the left when the triangle points to the right. We have to shift the triangle to the right by that offset.
+        /// the geometric center of equilateral triangle is not the same as the geometric center of its smallest bounding rect. There is some offset between the two centers to the left when the triangle points to the right. We have to shift the triangle to the right by that offset.
         let altitude = (sqrt(3) / 2) * triangleEdgeLength
         let innerCircleDiameter = (sqrt(3) / 6) * triangleEdgeLength
 
@@ -63,7 +63,7 @@ extension UIButton {
         let playShapeHighlighted = CAShapeLayer.playShape(UIColor.white.withAlphaComponent(0.7), triangleEdgeLength: triangleEdgeLength).toImage()
         button.setImage(playShapeHighlighted, for: .highlighted)
 
-        ///the geometric center of equilateral triangle is not the same as the geometric center of its smallest bounding rect. There is some offset between the two centers to the left when the triangle points to the right. We have to shift the triangle to the right by that offset.
+        /// the geometric center of equilateral triangle is not the same as the geometric center of its smallest bounding rect. There is some offset between the two centers to the left when the triangle points to the right. We have to shift the triangle to the right by that offset.
         let altitude = (sqrt(3) / 2) * triangleEdgeLength
         let innerCircleDiameter = (sqrt(3) / 6) * triangleEdgeLength
 
@@ -102,7 +102,7 @@ extension UIButton {
 
         let button = UIButton(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 80, height: 50)))
         button.setTitle("See All", for: .normal)
-        //button.titleLabel?.textColor = UIColor.redColor()
+        // button.titleLabel?.textColor = UIColor.redColor()
 
         return button
     }

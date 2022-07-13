@@ -11,7 +11,7 @@ import UIKit
 final class GalleryPagingDataSource: NSObject, UIPageViewControllerDataSource {
 
     weak var itemControllerDelegate: ItemControllerDelegate?
-    fileprivate weak var itemsDataSource:          GalleryItemsDataSource?
+    fileprivate weak var itemsDataSource: GalleryItemsDataSource?
     fileprivate weak var displacedViewsDataSource: GalleryDisplacedViewsDataSource?
 
     fileprivate let configuration: GalleryConfiguration

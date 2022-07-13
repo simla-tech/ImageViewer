@@ -38,7 +38,7 @@ class VideoView: UIView {
         }
     }
 
-    override class var layerClass : AnyClass {
+    override class var layerClass: AnyClass {
         return AVPlayerLayer.self
     }
 
@@ -66,9 +66,10 @@ class VideoView: UIView {
         player?.removeObserver(self, forKeyPath: "rate")
     }
 
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    // swiftlint:disable:next block_based_kvo
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
 
-        if let status = self.player?.status, let rate = self.player?.rate  {
+        if let status = self.player?.status, let rate = self.player?.rate {
 
             if status == .readyToPlay && rate != 0 {
 

@@ -5,6 +5,8 @@
 build/
 .build/
 DerivedData
+Derived
+*.xcodeproj
 
 ## Various settings
 *.pbxuser

@@ -9,7 +9,7 @@
 import UIKit
 
 extension UIApplication {
-    
+
     static var applicationWindow: UIWindow? {
         guard let windowScene =  UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first else {
             return nil
@@ -27,5 +27,5 @@ extension UIApplication {
 
         return !(orientations.contains(.landscapeLeft) || orientations.contains(.landscapeRight) || orientations.contains(.landscape))
     }
-    
+
 }

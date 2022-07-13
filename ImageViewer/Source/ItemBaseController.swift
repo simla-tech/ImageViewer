@@ -15,21 +15,21 @@ public protocol ItemView {
 
 open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGestureRecognizerDelegate, UIScrollViewDelegate where T: ItemView {
 
-    //UI
+    // UI
     public var itemView = T()
     let scrollView = UIScrollView()
-    
+
     let activityIndicatorView: UIActivityIndicatorView = {
         let view = UIActivityIndicatorView(style: .medium)
         view.color = .white
         return view
     }()
 
-    //DELEGATE / DATASOURCE
-    weak public var delegate:                 ItemControllerDelegate?
+    // DELEGATE / DATASOURCE
+    weak public var delegate: ItemControllerDelegate?
     weak public var displacedViewsDataSource: GalleryDisplacedViewsDataSource?
 
-    //STATE
+    // STATE
     public let index: Int
     public var isInitialController = false
     let itemCount: Int
@@ -37,7 +37,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
     fileprivate var isAnimating = false
     fileprivate var fetchImageBlock: FetchImageBlock
 
-    //CONFIGURATION
+    // CONFIGURATION
     fileprivate var presentationStyle = GalleryPresentationStyle.displacement
     fileprivate var doubleTapToZoomDuration = 0.15
     fileprivate var displacementDuration: TimeInterval = 0.55
@@ -63,7 +63,6 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
     // TRANSITIONS
     fileprivate var swipeToDismissTransition: GallerySwipeToDismissTransition?
-
 
     // MARK: - Initializers
 
@@ -246,7 +245,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
         scrollView.frame = self.view.bounds
         activityIndicatorView.center = view.boundsCenter
 
-        if let size = itemView.image?.size , size != CGSize.zero {
+        if let size = itemView.image?.size, size != CGSize.zero {
 
             let aspectFitItemSize = aspectFitSize(forContentOfSize: size, inBounds: self.scrollView.bounds.size)
 
@@ -284,7 +283,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
         let touchPoint = recognizer.location(ofTouch: 0, in: itemView)
         let aspectFillScale = aspectFillZoomScale(forBoundingSize: scrollView.bounds.size, contentSize: itemView.bounds.size)
 
-        if (scrollView.zoomScale == 1.0 || scrollView.zoomScale > aspectFillScale) {
+        if scrollView.zoomScale == 1.0 || scrollView.zoomScale > aspectFillScale {
 
             let zoomRectangle = zoomRect(ForScrollView: scrollView, scale: aspectFillScale, center: touchPoint)
 
@@ -292,8 +291,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
                 self?.scrollView.zoom(to: zoomRectangle, animated: false)
                 })
-        }
-        else  {
+        } else {
             UIView.animate(withDuration: doubleTapToZoomDuration, animations: {  [weak self] in
 
                 self?.scrollView.setZoomScale(1.0, animated: false)
@@ -316,7 +314,6 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
         case .began:
             swipeToDismissTransition = GallerySwipeToDismissTransition(scrollView: self.scrollView)
-
 
         case .changed:
             self.handleSwipeToDismissInProgress(swipingToDismissInProgress, forTouchPoint: currentTouchPoint)
@@ -400,10 +397,10 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
                                                                   escapeVelocity: velocity.x,
                                                                   completion: swipeToDismissCompletionBlock)
 
-        ///If none of the above select cases, we cancel.
+        /// If none of the above select cases, we cancel.
         default:
 
-            swipeToDismissTransition?.cancelTransition() { [weak self] in
+            swipeToDismissTransition?.cancelTransition { [weak self] in
                 self?.swipingToDismiss = nil
             }
         }
@@ -411,7 +408,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
     func animateDisplacedImageToOriginalPosition(_ duration: TimeInterval, completion: ((Bool) -> Void)?) {
 
-        guard (self.isAnimating == false) else { return }
+        guard self.isAnimating == false else { return }
         isAnimating = true
 
         UIView.animate(withDuration: duration, animations: {  [weak self] in
@@ -447,15 +444,15 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
             if presentationStyle == .displacement {
 
-                //Prepare the animated imageView
+                // Prepare the animated imageView
                 let animatedImageView = displacedView.imageView()
 
-                //rotate the imageView to starting angle
+                // rotate the imageView to starting angle
                 if UIApplication.isPortraitOnly == true {
                     animatedImageView.transform = deviceRotationTransform()
                 }
 
-                //position the image view to starting center
+                // position the image view to starting center
                 animatedImageView.center = displacedView.convert(displacedView.boundsCenter, to: self.view)
 
                 animatedImageView.clipsToBounds = true
@@ -485,9 +482,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
                         completion()
                     })
             }
-        }
-
-        else {
+        } else {
 
             itemView.alpha = 0
             itemView.isHidden = false
@@ -543,12 +538,12 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
                     self?.scrollView.zoomScale = 1
 
-                    //rotate the image view
+                    // rotate the image view
                     if UIApplication.isPortraitOnly == true {
                         self?.itemView.transform = deviceRotationTransform()
                     }
 
-                    //position the image view to starting center
+                    // position the image view to starting center
                     self?.itemView.bounds = displacedView.bounds
                     self?.itemView.center = displacedView.convert(displacedView.boundsCenter, to: self!.view)
                     self?.itemView.clipsToBounds = true
@@ -561,9 +556,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
                         completion()
                 })
-            }
-
-            else { fallthrough }
+            } else { fallthrough }
 
         case .fade:
 
@@ -590,7 +583,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
         /// The velocity vector will help us make the right decision
         let velocity = swipeToDismissRecognizer.velocity(in: swipeToDismissRecognizer.view)
-        ///A bit of paranoia
+        /// A bit of paranoia
         guard velocity.orientation != .none else { return false }
 
         /// We continue if the swipe is horizontal, otherwise it's Vertical and it is swipe to dismiss.
@@ -606,6 +599,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
     }
 
     // Reports the continuous progress of Swipe To Dismiss to the Gallery View Controller
+    // swiftlint:disable:next block_based_kvo
     override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
 
         guard let swipingToDismissInProgress = swipingToDismiss else { return }
