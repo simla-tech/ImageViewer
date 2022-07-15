@@ -24,6 +24,10 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
         view.color = .white
         return view
     }()
+    
+    private lazy var displacedView = displacedViewsDataSource?.provideDisplacementItem(atIndex: index)
+    // Prepare the animated imageView
+    private lazy var animatedImageView = displacedView?.imageView()
 
     // DELEGATE / DATASOURCE
     weak public var delegate: ItemControllerDelegate?
@@ -36,6 +40,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
     var swipingToDismiss: SwipeToDismiss?
     fileprivate var isAnimating = false
     fileprivate var fetchImageBlock: FetchImageBlock
+    private var animatedViewDisplased = false
 
     // CONFIGURATION
     fileprivate var presentationStyle = GalleryPresentationStyle.displacement
@@ -300,6 +305,8 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
     }
 
     @objc func scrollViewDidSwipeToDismiss(_ recognizer: UIPanGestureRecognizer) {
+        
+        displaceAnimatedView()
 
         /// A deliberate UX decision...you have to zoom back in to scale 1 to be able to swipe to dismiss. It is difficult for the user to swipe to dismiss from images larger then screen bounds because almost all the time it's not swiping to dismiss but instead panning a zoomed in picture on the canvas.
         guard scrollView.zoomScale == scrollView.minimumZoomScale else { return }
@@ -439,13 +446,11 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
         alongsideAnimation()
 
-        if var displacedView = displacedViewsDataSource?.provideDisplacementItem(atIndex: index),
+        if var displacedView = displacedView,
+           let animatedImageView = animatedImageView,
             let image = displacedView.image {
 
             if presentationStyle == .displacement {
-
-                // Prepare the animated imageView
-                let animatedImageView = displacedView.imageView()
 
                 // rotate the imageView to starting angle
                 if UIApplication.isPortraitOnly == true {
@@ -474,9 +479,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
                     }, completion: { [weak self] _ in
 
-                        self?.itemView.isHidden = false
-                        displacedView.isHidden = false
-                        animatedImageView.removeFromSuperview()
+                        self?.displaceAnimatedView()
 
                         self?.isAnimating = false
                         completion()
@@ -498,7 +501,18 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
             })
         }
     }
-
+    
+    func displaceAnimatedView() {
+        
+        if !animatedViewDisplased {
+            itemView.isHidden = false
+            displacedView?.isHidden = false
+            animatedImageView?.removeFromSuperview()
+            animatedViewDisplased = true
+        }
+        
+    }
+    
     func displacementTargetSize(forSize size: CGSize) -> CGSize {
 
         let boundingSize = rotationAdjustedBounds().size
