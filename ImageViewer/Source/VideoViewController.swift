@@ -14,9 +14,11 @@ extension VideoView: ItemView {}
 class VideoViewController: ItemBaseController<VideoView> {
 
     fileprivate let swipeToDismissFadeOutAccelerationFactor: CGFloat = 6
+    
+    private var fetchVideoURLBlock: FetchVideoURLBlock
 
-    let videoURL: URL
-    let player: AVPlayer
+    var videoURL: URL?
+    var player: AVPlayer?
     unowned let scrubber: VideoScrubber
 
     let fullHDScreenSizeLandscape = CGSize(width: 1920, height: 1080)
@@ -26,11 +28,16 @@ class VideoViewController: ItemBaseController<VideoView> {
     private var autoPlayStarted: Bool = false
     private var autoPlayEnabled: Bool = false
 
-    init(index: Int, itemCount: Int, fetchImageBlock: @escaping FetchImageBlock, videoURL: URL, scrubber: VideoScrubber, configuration: GalleryConfiguration, isInitialController: Bool = false) {
+    init(index: Int, itemCount: Int, fetchImageBlock: @escaping FetchImageBlock, fetchVideoURLBlock: @escaping FetchVideoURLBlock, videoURL: URL? = nil, scrubber: VideoScrubber, configuration: GalleryConfiguration, isInitialController: Bool = false) {
 
         self.videoURL = videoURL
+        if let videoURL = self.videoURL {
+            self.player = AVPlayer(url: videoURL)
+        }
+        
+        self.fetchVideoURLBlock = fetchVideoURLBlock
+        
         self.scrubber = scrubber
-        self.player = AVPlayer(url: self.videoURL)
 
         // Only those options relevant to the paging VideoViewController are explicitly handled here, the rest is handled by ItemViewControllers
         for item in configuration {
@@ -49,6 +56,8 @@ class VideoViewController: ItemBaseController<VideoView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        fetchVideoURL()
 
         if isInitialController == true { embeddedPlayButton.alpha = 0 }
 
@@ -57,41 +66,27 @@ class VideoViewController: ItemBaseController<VideoView> {
         embeddedPlayButton.center = self.view.boundsCenter
 
         embeddedPlayButton.addTarget(self, action: #selector(playVideoInitially), for: UIControl.Event.touchUpInside)
-
-        self.itemView.player = player
+        
         self.itemView.contentMode = .scaleAspectFill
     }
 
     override func viewWillAppear(_ animated: Bool) {
-
-        self.player.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions.new, context: nil)
-        self.player.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions.new, context: nil)
-
-        UIApplication.shared.beginReceivingRemoteControlEvents()
-
         super.viewWillAppear(animated)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-
-        self.player.removeObserver(self, forKeyPath: "status")
-        self.player.removeObserver(self, forKeyPath: "rate")
-
-        UIApplication.shared.endReceivingRemoteControlEvents()
-
         super.viewWillDisappear(animated)
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        performAutoPlay()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        self.player.pause()
+        self.player?.pause()
     }
 
     override func viewDidLayoutSubviews() {
@@ -101,10 +96,44 @@ class VideoViewController: ItemBaseController<VideoView> {
         itemView.bounds.size = aspectFitSize(forContentOfSize: isLandscape ? fullHDScreenSizeLandscape : fullHDScreenSizePortrait, inBounds: self.scrollView.bounds.size)
         itemView.center = scrollView.boundsCenter
     }
+    
+    public func fetchVideoURL() {
+        
+        self.activityIndicatorView.startAnimating()
+
+        fetchVideoURLBlock { [weak self] videoURL in
+            
+            guard let self = self else { return }
+
+            if let videoURL = videoURL {
+
+                DispatchQueue.main.async {
+                    self.activityIndicatorView.stopAnimating()
+                    self.player = AVPlayer(url: videoURL)
+                    self.player?.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions.new, context: nil)
+                    self.player?.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions.new, context: nil)
+                    UIApplication.shared.beginReceivingRemoteControlEvents()
+
+                    self.itemView.player = self.player
+                    self.scrubber.player = self.player
+                    self.performAutoPlay()
+                    self.view.setNeedsLayout()
+                    self.view.layoutIfNeeded()
+                }
+            }
+        }
+    }
+    
+    deinit {
+        self.player?.removeObserver(self, forKeyPath: "status")
+        self.player?.removeObserver(self, forKeyPath: "rate")
+
+        UIApplication.shared.endReceivingRemoteControlEvents()
+    }
 
     @objc func playVideoInitially() {
 
-        self.player.play()
+        self.player?.play()
 
         UIView.animate(withDuration: 0.25, animations: { [weak self] in
 
@@ -167,7 +196,9 @@ class VideoViewController: ItemBaseController<VideoView> {
     }
 
     func fadeOutEmbeddedPlayButton() {
-
+        guard let player = player else {
+            return
+        }
         if player.isPlaying() && embeddedPlayButton.alpha != 0 {
 
             UIView.animate(withDuration: 0.3, animations: { [weak self] in
@@ -178,6 +209,10 @@ class VideoViewController: ItemBaseController<VideoView> {
     }
 
     override func remoteControlReceived(with event: UIEvent?) {
+        
+        guard let player = self.player else {
+            return
+        }
 
         if let event = event {
 
@@ -187,27 +222,27 @@ class VideoViewController: ItemBaseController<VideoView> {
 
                 case .remoteControlTogglePlayPause:
 
-                    if self.player.isPlaying() {
+                    if player.isPlaying() {
 
-                        self.player.pause()
+                        player.pause()
                     } else {
 
-                        self.player.play()
+                        player.play()
                     }
 
                 case .remoteControlPause:
 
-                    self.player.pause()
+                    player.pause()
 
                 case .remoteControlPlay:
 
-                    self.player.play()
+                    player.play()
 
                 case .remoteControlPreviousTrack:
 
-                    self.player.pause()
-                    self.player.seek(to: CMTime(value: 0, timescale: 1))
-                    self.player.play()
+                    player.pause()
+                    player.seek(to: CMTime(value: 0, timescale: 1))
+                    player.play()
 
                 default:
 
