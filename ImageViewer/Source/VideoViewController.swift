@@ -14,7 +14,7 @@ extension VideoView: ItemView {}
 class VideoViewController: ItemBaseController<VideoView> {
 
     fileprivate let swipeToDismissFadeOutAccelerationFactor: CGFloat = 6
-    
+
     private var fetchVideoURLBlock: FetchVideoURLBlock
 
     var videoURL: URL?
