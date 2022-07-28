@@ -34,9 +34,9 @@ class VideoViewController: ItemBaseController<VideoView> {
         if let videoURL = self.videoURL {
             self.player = AVPlayer(url: videoURL)
         }
-        
+
         self.fetchVideoURLBlock = fetchVideoURLBlock
-        
+
         self.scrubber = scrubber
 
         // Only those options relevant to the paging VideoViewController are explicitly handled here, the rest is handled by ItemViewControllers
@@ -56,7 +56,7 @@ class VideoViewController: ItemBaseController<VideoView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         fetchVideoURL()
 
         if isInitialController == true { embeddedPlayButton.alpha = 0 }
@@ -66,7 +66,7 @@ class VideoViewController: ItemBaseController<VideoView> {
         embeddedPlayButton.center = self.view.boundsCenter
 
         embeddedPlayButton.addTarget(self, action: #selector(playVideoInitially), for: UIControl.Event.touchUpInside)
-        
+
         self.itemView.contentMode = .scaleAspectFill
     }
 
@@ -96,13 +96,13 @@ class VideoViewController: ItemBaseController<VideoView> {
         itemView.bounds.size = aspectFitSize(forContentOfSize: isLandscape ? fullHDScreenSizeLandscape : fullHDScreenSizePortrait, inBounds: self.scrollView.bounds.size)
         itemView.center = scrollView.boundsCenter
     }
-    
+
     public func fetchVideoURL() {
-        
+
         self.activityIndicatorView.startAnimating()
 
         fetchVideoURLBlock { [weak self] videoURL in
-            
+
             guard let self = self else { return }
 
             if let videoURL = videoURL {
@@ -123,7 +123,7 @@ class VideoViewController: ItemBaseController<VideoView> {
             }
         }
     }
-    
+
     deinit {
         self.player?.removeObserver(self, forKeyPath: "status")
         self.player?.removeObserver(self, forKeyPath: "rate")
@@ -209,7 +209,7 @@ class VideoViewController: ItemBaseController<VideoView> {
     }
 
     override func remoteControlReceived(with event: UIEvent?) {
-        
+
         guard let player = self.player else {
             return
         }
