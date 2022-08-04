@@ -551,7 +551,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
     }
 
     /// Invoked when closed via close button
-    @objc fileprivate func closeInteractively() {
+    @objc public func closeInteractively() {
         closeDecorationViews(closedCompletion)
         setNeedsStatusBarAppearanceUpdate()
     }
