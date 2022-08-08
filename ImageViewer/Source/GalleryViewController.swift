@@ -54,6 +54,8 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
     fileprivate let swipeToDismissFadeOutAccelerationFactor: CGFloat = 6
     fileprivate var decorationViewsFadeDuration = 0.15
 
+    private var constrained = false
+
     /// COMPLETION BLOCKS
     /// If set, the block is executed right after the initial launch animations finish.
     open var launchedCompletion: (() -> Void)?
@@ -362,9 +364,29 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         switch headerLayout {
 
         case .pinCenterTop:
-            header.autoresizingMask = [.flexibleBottomMargin, .flexibleLeftMargin, .flexibleRightMargin]
-            header.center = self.view.boundsCenter
-            header.frame.origin.y = min(0, defaultInsets.top)
+
+            if !constrained {
+                header.removeFromSuperview()
+                header.translatesAutoresizingMaskIntoConstraints = false
+                self.view.addSubview(header)
+
+                var headerSize: CGFloat = 0
+
+                if defaultInsets.top > 0 {
+                    headerSize = header.frame.size.height + defaultInsets.top + 15
+                } else {
+                    headerSize = header.frame.size.height
+                }
+
+                NSLayoutConstraint.activate([
+                    header.topAnchor.constraint(equalTo: self.view.topAnchor),
+                    header.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+                    header.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+                ])
+                header.heightAnchor.constraint(equalToConstant: headerSize).isActive = true
+
+                constrained = true
+            }
 
         case .center(let marginTop):
 
