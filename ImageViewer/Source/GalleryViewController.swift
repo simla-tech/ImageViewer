@@ -360,7 +360,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         guard let header = headerView else { return }
 
         switch headerLayout {
-            
+
         case .pinCenterTop:
             header.autoresizingMask = [.flexibleBottomMargin, .flexibleLeftMargin, .flexibleRightMargin]
             header.center = self.view.boundsCenter
