@@ -27,6 +27,7 @@ public enum HeaderLayout {
     case pinRight(MarginTop, MarginRight)
     case pinBoth(MarginTop, MarginLeft, MarginRight)
     case center(MarginTop)
+    case pinCenterTop
 }
 
 /// Represents various possible layouts for the footer
