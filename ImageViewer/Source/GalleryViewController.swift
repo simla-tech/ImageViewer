@@ -53,6 +53,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
     fileprivate var rotationMode = GalleryRotationMode.always
     fileprivate let swipeToDismissFadeOutAccelerationFactor: CGFloat = 6
     fileprivate var decorationViewsFadeDuration = 0.15
+    fileprivate lazy var statusBarHiddenToggled = statusBarHidden
 
     private var constrained = false
 
@@ -188,7 +189,11 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
     }
 
     open override var prefersStatusBarHidden: Bool {
-        return statusBarHidden
+        return statusBarHiddenToggled
+    }
+
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
     }
 
     fileprivate func configureOverlayView() {
@@ -650,6 +655,8 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
                 })
             }
 
+            self?.setNeedsStatusBarAppearanceUpdate()
+
         })
     }
 
@@ -694,7 +701,9 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
     }
 
     open func itemControllerDidSingleTap(_ controller: ItemController) {
-
+        if !statusBarHidden {
+            self.statusBarHiddenToggled.toggle()
+        }
         self.decorationViewsHidden.flip()
         animateDecorationViews(visible: !self.decorationViewsHidden)
     }
