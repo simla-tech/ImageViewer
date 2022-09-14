@@ -6,12 +6,14 @@ let project = Project(
     targets: [
         Target(
             name: .ImageViewer,
-            sources: "ImageViewer/Source/**"
+            sources: "ImageViewer/Source/**",
+            lintConfigPath: nil
         ),
         Target(
             name: .ImageViewerTests,
             product: .unitTests,
             sources: "ImageViewerTests/**",
+            lintConfigPath: nil,
             dependencies: [.target(name: .ImageViewer)]
         )
     ],
