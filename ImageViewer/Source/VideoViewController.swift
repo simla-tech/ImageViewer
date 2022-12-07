@@ -11,7 +11,7 @@ import AVFoundation
 
 extension VideoView: ItemView {}
 
-class VideoViewController: ItemBaseController<VideoView> {
+final class VideoViewController: ItemBaseController<VideoView> {
 
     fileprivate let swipeToDismissFadeOutAccelerationFactor: CGFloat = 6
 

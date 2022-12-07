@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ThumbnailCell: UICollectionViewCell {
+final class ThumbnailCell: UICollectionViewCell {
 
     let imageView = UIImageView()
 

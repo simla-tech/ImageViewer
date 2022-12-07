@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-class VideoView: UIView {
+final class VideoView: UIView {
 
     let previewImageView = UIImageView()
     var image: UIImage? { didSet { previewImageView.image = image } }

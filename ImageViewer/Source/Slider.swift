@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Slider: UISlider {
+final class Slider: UISlider {
 
     @objc dynamic var isSliding: Bool = false
 

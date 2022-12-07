@@ -18,7 +18,7 @@ sizes identical
 
 */
 
-class AspectFitSizeFunctionTest: XCTestCase {
+final class AspectFitSizeFunctionTest: XCTestCase {
 
     let portraitScreenSize  = CGSize(width: 320, height: 480)
 

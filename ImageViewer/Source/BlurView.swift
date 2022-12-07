@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BlurView: UIView {
+final class BlurView: UIView {
 
     var blurPresentDuration: TimeInterval = 0.5
     var blurPresentDelay: TimeInterval = 0

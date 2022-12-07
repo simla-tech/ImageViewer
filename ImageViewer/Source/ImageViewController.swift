@@ -10,5 +10,5 @@ import UIKit
 
 extension UIImageView: ItemView {}
 
-class ImageViewController: ItemBaseController<UIImageView> {
+final class ImageViewController: ItemBaseController<UIImageView> {
 }
