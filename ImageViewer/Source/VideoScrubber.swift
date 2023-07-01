@@ -6,8 +6,8 @@
 //  Copyright © 2016 MailOnline. All rights reserved.
 //
 
-import UIKit
 import AVFoundation
+import UIKit
 
 open class VideoScrubber: UIControl {
 
@@ -25,7 +25,7 @@ open class VideoScrubber: UIControl {
     fileprivate var timeLabelAttributes: [NSAttributedString.Key: Any] {
         var attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12)]
 
-        if let tintColor = tintColor {
+        if let tintColor {
             attributes[NSAttributedString.Key.foregroundColor] = tintColor
         }
 
@@ -35,7 +35,7 @@ open class VideoScrubber: UIControl {
     weak var player: AVPlayer? {
 
         willSet {
-            if let player = player {
+            if let player {
 
                 /// KVO
                 player.removeObserver(self, forKeyPath: "status")
@@ -55,19 +55,28 @@ open class VideoScrubber: UIControl {
 
         didSet {
 
-            if let player = player {
+            if let player {
 
                 /// KVO
                 player.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions.new, context: nil)
                 player.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions.new, context: nil)
 
                 /// NC
-                NotificationCenter.default.addObserver(self, selector: #selector(didEndPlaying), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+                NotificationCenter.default.addObserver(
+                    self,
+                    selector: #selector(didEndPlaying),
+                    name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
+                    object: nil
+                )
 
                 /// TIMER
-                periodicObserver = player.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 1), queue: nil, using: { [weak self] _ in
-                    self?.update()
-                }) as AnyObject?
+                periodicObserver = player.addPeriodicTimeObserver(
+                    forInterval: CMTime(value: 1, timescale: 1),
+                    queue: nil,
+                    using: { [weak self] _ in
+                        self?.update()
+                    }
+                ) as AnyObject?
 
                 self.update()
             }
@@ -77,13 +86,13 @@ open class VideoScrubber: UIControl {
     override init(frame: CGRect) {
 
         super.init(frame: frame)
-        setup()
+        self.setup()
     }
 
     public required init?(coder aDecoder: NSCoder) {
 
         super.init(coder: aDecoder)
-        setup()
+        self.setup()
     }
 
     deinit {
@@ -99,7 +108,8 @@ open class VideoScrubber: UIControl {
         }
     }
 
-    @objc func didEndPlaying() {
+    @objc
+    func didEndPlaying() {
 
         self.playButton.isHidden = true
         self.pauseButton.isHidden = true
@@ -110,52 +120,61 @@ open class VideoScrubber: UIControl {
 
         self.tintColor = .white
         self.clipsToBounds = true
-        pauseButton.isHidden = true
-        replayButton.isHidden = true
+        self.pauseButton.isHidden = true
+        self.replayButton.isHidden = true
 
-        scrubber.minimumValue = 0
-        scrubber.maximumValue = 1000
-        scrubber.value = 0
+        self.scrubber.minimumValue = 0
+        self.scrubber.maximumValue = 1000
+        self.scrubber.value = 0
 
-        timeLabel.attributedText = NSAttributedString(string: "--:--", attributes: timeLabelAttributes)
-        timeLabel.textAlignment =  .center
+        self.timeLabel.attributedText = NSAttributedString(string: "--:--", attributes: self.timeLabelAttributes)
+        self.timeLabel.textAlignment = .center
 
-        playButton.addTarget(self, action: #selector(play), for: UIControl.Event.touchUpInside)
-        pauseButton.addTarget(self, action: #selector(pause), for: UIControl.Event.touchUpInside)
-        replayButton.addTarget(self, action: #selector(replay), for: UIControl.Event.touchUpInside)
-        scrubber.addTarget(self, action: #selector(updateCurrentTime), for: UIControl.Event.valueChanged)
-        scrubber.addTarget(self, action: #selector(seekToTime), for: [UIControl.Event.touchUpInside, UIControl.Event.touchUpOutside])
+        self.playButton.addTarget(self, action: #selector(self.play), for: UIControl.Event.touchUpInside)
+        self.pauseButton.addTarget(self, action: #selector(self.pause), for: UIControl.Event.touchUpInside)
+        self.replayButton.addTarget(self, action: #selector(self.replay), for: UIControl.Event.touchUpInside)
+        self.scrubber.addTarget(self, action: #selector(self.updateCurrentTime), for: UIControl.Event.valueChanged)
+        self.scrubber.addTarget(
+            self,
+            action: #selector(self.seekToTime),
+            for: [UIControl.Event.touchUpInside, UIControl.Event.touchUpOutside]
+        )
 
-        self.addSubviews(playButton, pauseButton, replayButton, scrubber, timeLabel)
+        self.addSubviews(self.playButton, self.pauseButton, self.replayButton, self.scrubber, self.timeLabel)
 
-        scrubber.addObserver(self, forKeyPath: "isSliding", options: NSKeyValueObservingOptions.new, context: nil)
+        self.scrubber.addObserver(self, forKeyPath: "isSliding", options: NSKeyValueObservingOptions.new, context: nil)
     }
 
-    open override func layoutSubviews() {
+    override open func layoutSubviews() {
         super.layoutSubviews()
 
-        playButton.center = self.boundsCenter
-        playButton.frame.origin.x = 0
-        pauseButton.frame = playButton.frame
-        replayButton.frame = playButton.frame
+        self.playButton.center = self.boundsCenter
+        self.playButton.frame.origin.x = 0
+        self.pauseButton.frame = self.playButton.frame
+        self.replayButton.frame = self.playButton.frame
 
-        timeLabel.center = self.boundsCenter
-        timeLabel.frame.origin.x = self.bounds.maxX - timeLabel.bounds.width
+        self.timeLabel.center = self.boundsCenter
+        self.timeLabel.frame.origin.x = self.bounds.maxX - self.timeLabel.bounds.width
 
-        scrubber.bounds.size.width = self.bounds.width - playButton.bounds.width - timeLabel.bounds.width
-        scrubber.bounds.size.height = 20
-        scrubber.center = self.boundsCenter
-        scrubber.frame.origin.x = playButton.frame.maxX
+        self.scrubber.bounds.size.width = self.bounds.width - self.playButton.bounds.width - self.timeLabel.bounds.width
+        self.scrubber.bounds.size.height = 20
+        self.scrubber.center = self.boundsCenter
+        self.scrubber.frame.origin.x = self.playButton.frame.maxX
     }
 
     // swiftlint:disable:next block_based_kvo
-    open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+    override open func observeValue(
+        forKeyPath keyPath: String?,
+        of object: Any?,
+        change: [NSKeyValueChangeKey: Any]?,
+        context: UnsafeMutableRawPointer?
+    ) {
 
         if keyPath == "isSliding" {
 
-            if scrubber.isSliding == false {
+            if self.scrubber.isSliding == false {
 
-                stoppedSlidingTimeStamp = Date()
+                self.stoppedSlidingTimeStamp = Date()
             }
         } else if keyPath == "rate" || keyPath == "status" {
 
@@ -163,27 +182,31 @@ open class VideoScrubber: UIControl {
         }
     }
 
-    @objc func play() {
+    @objc
+    func play() {
 
         self.player?.play()
     }
 
-    @objc func replay() {
+    @objc
+    func replay() {
 
         self.player?.seek(to: CMTime(value: 0, timescale: 1))
         self.player?.play()
     }
 
-    @objc func pause() {
+    @objc
+    func pause() {
 
         self.player?.pause()
     }
 
-    @objc func seekToTime() {
+    @objc
+    func seekToTime() {
 
-        let progress = scrubber.value / scrubber.maximumValue // naturally will be between 0 to 1
+        let progress = self.scrubber.value / self.scrubber.maximumValue // naturally will be between 0 to 1
 
-        if let player = self.player, let currentItem =  player.currentItem {
+        if let player = self.player, let currentItem = player.currentItem {
 
             let time = currentItem.duration.seconds * Double(progress)
             player.seek(to: CMTime(seconds: time, preferredTimescale: 1))
@@ -192,10 +215,10 @@ open class VideoScrubber: UIControl {
 
     func update() {
 
-        updateButtons()
-        updateDuration()
-        updateScrubber()
-        updateCurrentTime()
+        self.updateButtons()
+        self.updateDuration()
+        self.updateScrubber()
+        self.updateCurrentTime()
     }
 
     func updateButtons() {
@@ -218,9 +241,9 @@ open class VideoScrubber: UIControl {
 
     func updateScrubber() {
 
-        guard scrubber.isSliding == false else { return }
+        guard self.scrubber.isSliding == false else { return }
 
-        let timeElapsed = Date().timeIntervalSince( stoppedSlidingTimeStamp)
+        let timeElapsed = Date().timeIntervalSince(self.stoppedSlidingTimeStamp)
         guard timeElapsed > 1 else {
             return
         }
@@ -239,18 +262,19 @@ open class VideoScrubber: UIControl {
         }
     }
 
-    @objc func updateCurrentTime() {
+    @objc
+    func updateCurrentTime() {
 
         if let duration = self.duration, self.duration != nil {
 
-            let sliderProgress = scrubber.value / scrubber.maximumValue
+            let sliderProgress = self.scrubber.value / self.scrubber.maximumValue
             let currentTime = Double(sliderProgress) * duration
 
-            let timeString = stringFromTimeInterval(currentTime as TimeInterval)
+            let timeString = self.stringFromTimeInterval(currentTime as TimeInterval)
 
-            timeLabel.attributedText = NSAttributedString(string: timeString, attributes: timeLabelAttributes)
+            self.timeLabel.attributedText = NSAttributedString(string: timeString, attributes: self.timeLabelAttributes)
         } else {
-            timeLabel.attributedText = NSAttributedString(string: "--:--", attributes: timeLabelAttributes)
+            self.timeLabel.attributedText = NSAttributedString(string: "--:--", attributes: self.timeLabelAttributes)
         }
     }
 
@@ -267,33 +291,36 @@ open class VideoScrubber: UIControl {
     }
 
     override open func tintColorDidChange() {
-        timeLabel.attributedText = NSAttributedString(string: "--:--", attributes: timeLabelAttributes)
+        self.timeLabel.attributedText = NSAttributedString(string: "--:--", attributes: self.timeLabelAttributes)
 
-        let playButtonImage = playButton.imageView?.image?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
-        playButton.imageView?.tintColor = self.tintColor
-        playButton.setImage(playButtonImage, for: .normal)
+        let playButtonImage = self.playButton.imageView?.image?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
+        self.playButton.imageView?.tintColor = self.tintColor
+        self.playButton.setImage(playButtonImage, for: .normal)
 
-        if let playButtonImage = playButtonImage,
-            let highlightImage = self.image(playButtonImage, with: self.tintColor.shadeDarker()) as UIImage? {
-            playButton.setImage(highlightImage, for: .highlighted)
+        if let playButtonImage,
+           let highlightImage = self.image(playButtonImage, with: self.tintColor.shadeDarker()) as UIImage?
+        {
+            self.playButton.setImage(highlightImage, for: .highlighted)
         }
 
-        let pauseButtonImage = pauseButton.imageView?.image?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
-        pauseButton.imageView?.tintColor = self.tintColor
-        pauseButton.setImage(pauseButtonImage, for: .normal)
+        let pauseButtonImage = self.pauseButton.imageView?.image?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
+        self.pauseButton.imageView?.tintColor = self.tintColor
+        self.pauseButton.setImage(pauseButtonImage, for: .normal)
 
-        if let pauseButtonImage = pauseButtonImage,
-            let highlightImage = self.image(pauseButtonImage, with: self.tintColor.shadeDarker()) as UIImage? {
-            pauseButton.setImage(highlightImage, for: .highlighted)
+        if let pauseButtonImage,
+           let highlightImage = self.image(pauseButtonImage, with: self.tintColor.shadeDarker()) as UIImage?
+        {
+            self.pauseButton.setImage(highlightImage, for: .highlighted)
         }
 
-        let replayButtonImage = replayButton.imageView?.image?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
-        replayButton.imageView?.tintColor = self.tintColor
-        replayButton.setImage(replayButtonImage, for: .normal)
+        let replayButtonImage = self.replayButton.imageView?.image?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
+        self.replayButton.imageView?.tintColor = self.tintColor
+        self.replayButton.setImage(replayButtonImage, for: .normal)
 
-        if let replayButtonImage = replayButtonImage,
-            let highlightImage = self.image(replayButtonImage, with: self.tintColor.shadeDarker()) as UIImage? {
-            replayButton.setImage(highlightImage, for: .highlighted)
+        if let replayButtonImage,
+           let highlightImage = self.image(replayButtonImage, with: self.tintColor.shadeDarker()) as UIImage?
+        {
+            self.replayButton.setImage(highlightImage, for: .highlighted)
         }
     }
 

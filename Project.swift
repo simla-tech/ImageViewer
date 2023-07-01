@@ -7,13 +7,13 @@ let project = Project(
         Target(
             name: .ImageViewer,
             sources: "ImageViewer/Source/**",
-            lintConfigPath: nil
+            enableCodeLinting: false
         ),
         Target(
             name: .ImageViewerTests,
             product: .unitTests,
             sources: "ImageViewerTests/**",
-            lintConfigPath: nil,
+            enableCodeLinting: false,
             dependencies: [.target(name: .ImageViewer)]
         )
     ],

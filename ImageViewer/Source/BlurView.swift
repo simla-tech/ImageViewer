@@ -26,10 +26,11 @@ final class BlurView: UIView {
     var colorTargetOpacity: CGFloat = 1
 
     var overlayColor = UIColor.black {
-        didSet { colorView.backgroundColor = overlayColor }
+        didSet { self.colorView.backgroundColor = self.overlayColor }
     }
 
-    let blurringViewContainer = UIView() // serves as a transparency container for the blurringView as it's not recommended by Apple to apply transparency directly to the UIVisualEffectsView
+    let blurringViewContainer =
+        UIView() // serves as a transparency container for the blurringView as it's not recommended by Apple to apply transparency directly to the UIVisualEffectsView
     let blurringView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
     let colorView = UIView()
 
@@ -41,54 +42,78 @@ final class BlurView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        blurringViewContainer.alpha = 0
+        self.blurringViewContainer.alpha = 0
 
-        colorView.backgroundColor = overlayColor
-        colorView.alpha = 0
+        self.colorView.backgroundColor = self.overlayColor
+        self.colorView.alpha = 0
 
-        self.addSubview(blurringViewContainer)
-        blurringViewContainer.addSubview(blurringView)
-        self.addSubview(colorView)
+        self.addSubview(self.blurringViewContainer)
+        self.blurringViewContainer.addSubview(self.blurringView)
+        self.addSubview(self.colorView)
     }
 
-    @available (iOS, unavailable)
+    @available(iOS, unavailable)
     required init?(coder aDecoder: NSCoder) { fatalError() }
 
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        blurringViewContainer.frame = self.bounds
-        blurringView.frame = blurringViewContainer.bounds
-        colorView.frame = self.bounds
+        self.blurringViewContainer.frame = self.bounds
+        self.blurringView.frame = self.blurringViewContainer.bounds
+        self.colorView.frame = self.bounds
     }
 
     func present() {
 
-        UIView.animate(withDuration: blurPresentDuration, delay: blurPresentDelay, options: .curveLinear, animations: { [weak self] in
+        UIView.animate(
+            withDuration: self.blurPresentDuration,
+            delay: self.blurPresentDelay,
+            options: .curveLinear,
+            animations: { [weak self] in
 
-            self?.blurringViewContainer.alpha = self!.blurTargetOpacity
+                self?.blurringViewContainer.alpha = self!.blurTargetOpacity
 
-            }, completion: nil)
+            },
+            completion: nil
+        )
 
-        UIView.animate(withDuration: colorPresentDuration, delay: colorPresentDelay, options: .curveLinear, animations: { [weak self] in
+        UIView.animate(
+            withDuration: self.colorPresentDuration,
+            delay: self.colorPresentDelay,
+            options: .curveLinear,
+            animations: { [weak self] in
 
-            self?.colorView.alpha = self!.colorTargetOpacity
+                self?.colorView.alpha = self!.colorTargetOpacity
 
-            }, completion: nil)
+            },
+            completion: nil
+        )
     }
 
     func dismiss() {
 
-        UIView.animate(withDuration: blurDismissDuration, delay: blurDismissDelay, options: .curveLinear, animations: { [weak self] in
+        UIView.animate(
+            withDuration: self.blurDismissDuration,
+            delay: self.blurDismissDelay,
+            options: .curveLinear,
+            animations: { [weak self] in
 
-            self?.blurringViewContainer.alpha = 0
+                self?.blurringViewContainer.alpha = 0
 
-            }, completion: nil)
+            },
+            completion: nil
+        )
 
-        UIView.animate(withDuration: colorDismissDuration, delay: colorDismissDelay, options: .curveLinear, animations: { [weak self] in
+        UIView.animate(
+            withDuration: self.colorDismissDuration,
+            delay: self.colorDismissDelay,
+            options: .curveLinear,
+            animations: { [weak self] in
 
-            self?.colorView.alpha = 0
+                self?.colorView.alpha = 0
 
-            }, completion: nil)
+            },
+            completion: nil
+        )
     }
 }

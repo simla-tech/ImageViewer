@@ -36,7 +36,8 @@ extension UIButton {
         let playShapeNormal = CAShapeLayer.playShape(UIColor.red, triangleEdgeLength: triangleEdgeLength).toImage()
         button.setImage(playShapeNormal, for: .normal)
 
-        let playShapeHighlighted = CAShapeLayer.playShape(UIColor.red.withAlphaComponent(0.7), triangleEdgeLength: triangleEdgeLength).toImage()
+        let playShapeHighlighted = CAShapeLayer.playShape(UIColor.red.withAlphaComponent(0.7), triangleEdgeLength: triangleEdgeLength)
+            .toImage()
         button.setImage(playShapeHighlighted, for: .highlighted)
 
         /// the geometric center of equilateral triangle is not the same as the geometric center of its smallest bounding rect. There is some offset between the two centers to the left when the triangle points to the right. We have to shift the triangle to the right by that offset.
@@ -60,7 +61,8 @@ extension UIButton {
         let playShapeNormal = CAShapeLayer.playShape(UIColor.white, triangleEdgeLength: triangleEdgeLength).toImage()
         button.setImage(playShapeNormal, for: .normal)
 
-        let playShapeHighlighted = CAShapeLayer.playShape(UIColor.white.withAlphaComponent(0.7), triangleEdgeLength: triangleEdgeLength).toImage()
+        let playShapeHighlighted = CAShapeLayer.playShape(UIColor.white.withAlphaComponent(0.7), triangleEdgeLength: triangleEdgeLength)
+            .toImage()
         button.setImage(playShapeHighlighted, for: .highlighted)
 
         /// the geometric center of equilateral triangle is not the same as the geometric center of its smallest bounding rect. There is some offset between the two centers to the left when the triangle points to the right. We have to shift the triangle to the right by that offset.
@@ -84,7 +86,11 @@ extension UIButton {
         let pauseImageNormal = CAShapeLayer.pauseShape(UIColor.white, elementSize: elementSize, elementDistance: distance).toImage()
         button.setImage(pauseImageNormal, for: .normal)
 
-        let pauseImageHighlighted = CAShapeLayer.pauseShape(UIColor.white.withAlphaComponent(0.7), elementSize: elementSize, elementDistance: distance).toImage()
+        let pauseImageHighlighted = CAShapeLayer.pauseShape(
+            UIColor.white.withAlphaComponent(0.7),
+            elementSize: elementSize,
+            elementDistance: distance
+        ).toImage()
         button.setImage(pauseImageHighlighted, for: .highlighted)
 
         return button

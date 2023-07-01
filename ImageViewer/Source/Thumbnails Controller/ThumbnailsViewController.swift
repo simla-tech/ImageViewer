@@ -24,11 +24,17 @@ final class ThumbnailsViewController: UICollectionViewController, UICollectionVi
     required init(itemsDataSource: GalleryItemsDataSource) {
         self.itemsDataSource = itemsDataSource
 
-        super.init(collectionViewLayout: layout)
+        super.init(collectionViewLayout: self.layout)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(rotate), name: UIDevice.orientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.rotate),
+            name: UIDevice.orientationDidChangeNotification,
+            object: nil
+        )
     }
 
+    @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -37,41 +43,48 @@ final class ThumbnailsViewController: UICollectionViewController, UICollectionVi
         NotificationCenter.default.removeObserver(self)
     }
 
-    @objc func rotate() {
+    @objc
+    func rotate() {
         guard UIApplication.isPortraitOnly else { return }
 
-        guard UIDevice.current.orientation.isFlat == false &&
-            isAnimating == false else { return }
+        guard UIDevice.current.orientation.isFlat == false,
+              self.isAnimating == false else { return }
 
-        isAnimating = true
+        self.isAnimating = true
 
-        UIView.animate(withDuration: rotationAnimationDuration, delay: 0, options: UIView.AnimationOptions.curveLinear, animations: { [weak self] () -> Void in
-            self?.view.transform = windowRotationTransform()
-            self?.view.bounds = rotationAdjustedBounds()
-            self?.view.setNeedsLayout()
-            self?.view.layoutIfNeeded()
+        UIView.animate(
+            withDuration: self.rotationAnimationDuration,
+            delay: 0,
+            options: UIView.AnimationOptions.curveLinear,
+            animations: { [weak self] () in
+                self?.view.transform = windowRotationTransform()
+                self?.view.bounds = rotationAdjustedBounds()
+                self?.view.setNeedsLayout()
+                self?.view.layoutIfNeeded()
 
-        }, completion: { [weak self] _  in
-            self?.isAnimating = false
-        })
+            },
+            completion: { [weak self] _ in
+                self?.isAnimating = false
+            }
+        )
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         let screenWidth = self.view.frame.width
-        layout.sectionInset = UIEdgeInsets(top: 50, left: 8, bottom: 8, right: 8)
-        layout.itemSize = CGSize(width: screenWidth/3 - 8, height: screenWidth/3 - 8)
-        layout.minimumInteritemSpacing = 4
-        layout.minimumLineSpacing = 4
+        self.layout.sectionInset = UIEdgeInsets(top: 50, left: 8, bottom: 8, right: 8)
+        self.layout.itemSize = CGSize(width: screenWidth / 3 - 8, height: screenWidth / 3 - 8)
+        self.layout.minimumInteritemSpacing = 4
+        self.layout.minimumLineSpacing = 4
 
-        self.collectionView?.register(ThumbnailCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView?.register(ThumbnailCell.self, forCellWithReuseIdentifier: self.reuseIdentifier)
 
-        addCloseButton()
+        self.addCloseButton()
     }
 
     fileprivate func addCloseButton() {
-        guard let closeButton = closeButton, let closeLayout = closeLayout else { return }
+        guard let closeButton, let closeLayout else { return }
 
         switch closeLayout {
         case .pinRight(let marginTop, let marginRight):
@@ -84,24 +97,25 @@ final class ThumbnailsViewController: UICollectionViewController, UICollectionVi
             closeButton.frame.origin.y = marginTop
         }
 
-        closeButton.addTarget(self, action: #selector(close), for: .touchUpInside)
+        closeButton.addTarget(self, action: #selector(self.close), for: .touchUpInside)
 
         self.view.addSubview(closeButton)
     }
 
-    @objc func close() {
+    @objc
+    func close() {
         self.dismiss(animated: true, completion: nil)
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return itemsDataSource.itemCount()
+        self.itemsDataSource.itemCount()
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ThumbnailCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.reuseIdentifier, for: indexPath) as! ThumbnailCell
 
-        let item = itemsDataSource.provideGalleryItem((indexPath as NSIndexPath).row)
+        let item = self.itemsDataSource.provideGalleryItem((indexPath as NSIndexPath).row)
 
         switch item {
 
@@ -109,7 +123,7 @@ final class ThumbnailsViewController: UICollectionViewController, UICollectionVi
 
             fetchImageBlock { image in
 
-                if let image = image {
+                if let image {
 
                     cell.imageView.image = image
                 }
@@ -119,7 +133,7 @@ final class ThumbnailsViewController: UICollectionViewController, UICollectionVi
 
             fetchImageBlock { image in
 
-                if let image = image {
+                if let image {
 
                     cell.imageView.image = image
                 }
@@ -129,7 +143,7 @@ final class ThumbnailsViewController: UICollectionViewController, UICollectionVi
 
             fetchImageBlock { image in
 
-                if let image = image {
+                if let image {
 
                     cell.imageView.image = image
                 }
@@ -140,7 +154,7 @@ final class ThumbnailsViewController: UICollectionViewController, UICollectionVi
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        onItemSelected?((indexPath as NSIndexPath).row)
-        close()
+        self.onItemSelected?((indexPath as NSIndexPath).row)
+        self.close()
     }
 }

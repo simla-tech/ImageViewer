@@ -199,8 +199,8 @@ public struct GallerySwipeToDismissMode: OptionSet {
     public init(rawValue: Int) { self.rawValue = rawValue }
     public let rawValue: Int
 
-    public static let never      = GallerySwipeToDismissMode([])
+    public static let never = GallerySwipeToDismissMode([])
     public static let horizontal = GallerySwipeToDismissMode(rawValue: 1 << 0)
-    public static let vertical   = GallerySwipeToDismissMode(rawValue: 1 << 1)
-    public static let always: GallerySwipeToDismissMode = [ .horizontal, .vertical ]
+    public static let vertical = GallerySwipeToDismissMode(rawValue: 1 << 1)
+    public static let always: GallerySwipeToDismissMode = [.horizontal, .vertical]
 }

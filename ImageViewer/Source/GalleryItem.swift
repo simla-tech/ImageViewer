@@ -12,7 +12,13 @@ public typealias ImageCompletion = (UIImage?) -> Void
 public typealias VideoURLCompletion = ((URL?) -> Void)?
 public typealias FetchImageBlock = (@escaping ImageCompletion) -> Void
 public typealias FetchVideoURLBlock = (VideoURLCompletion) -> Void
-public typealias ItemViewControllerBlock = (_ index: Int, _ itemCount: Int, _ fetchImageBlock: FetchImageBlock, _ configuration: GalleryConfiguration, _ isInitialController: Bool) -> UIViewController
+public typealias ItemViewControllerBlock = (
+    _ index: Int,
+    _ itemCount: Int,
+    _ fetchImageBlock: FetchImageBlock,
+    _ configuration: GalleryConfiguration,
+    _ isInitialController: Bool
+) -> UIViewController
 
 public enum GalleryItem {
 

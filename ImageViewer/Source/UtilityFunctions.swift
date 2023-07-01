@@ -6,8 +6,8 @@
 //  Copyright © 2016 MailOnline. All rights reserved.
 //
 
-import UIKit
 import AVFoundation
+import UIKit
 
 /// returns a size that aspect-fits into the bounding size. Example -> We have some view of
 /// certain size and the question is, what would have to be its size, so that it would fit
@@ -15,18 +15,20 @@ import AVFoundation
 
 func aspectFitSize(forContentOfSize contentSize: CGSize, inBounds bounds: CGSize) -> CGSize {
 
-    return AVMakeRect(aspectRatio: contentSize, insideRect: CGRect(origin: CGPoint.zero, size: bounds)).size
+    AVMakeRect(aspectRatio: contentSize, insideRect: CGRect(origin: CGPoint.zero, size: bounds)).size
 }
 
 func aspectFitContentSize(forBoundingSize boundingSize: CGSize, contentSize: CGSize) -> CGSize {
 
-    return AVMakeRect(aspectRatio: contentSize, insideRect: CGRect(origin: CGPoint.zero, size: boundingSize)).size
+    AVMakeRect(aspectRatio: contentSize, insideRect: CGRect(origin: CGPoint.zero, size: boundingSize)).size
 }
 
 func aspectFillZoomScale(forBoundingSize boundingSize: CGSize, contentSize: CGSize) -> CGFloat {
 
     let aspectFitSize = aspectFitContentSize(forBoundingSize: boundingSize, contentSize: contentSize)
-    return (floor(boundingSize.width) == floor(aspectFitSize.width)) ? (boundingSize.height / aspectFitSize.height): (boundingSize.width / aspectFitSize.width)
+    return (floor(boundingSize.width) == floor(aspectFitSize.width))
+        ? (boundingSize.height / aspectFitSize.height)
+        : (boundingSize.width / aspectFitSize.width)
 }
 
 func contentCenter(forBoundingSize boundingSize: CGSize, contentSize: CGSize) -> CGPoint {
@@ -38,15 +40,15 @@ func contentCenter(forBoundingSize boundingSize: CGSize, contentSize: CGSize) ->
     /// so that we can get the correct new center value. When these are added, edges of contentView
     /// are aligned in realtime and always aligned with corners of scrollView.
 
-    let horizontalOffset = (boundingSize.width > contentSize.width) ? ((boundingSize.width - contentSize.width) * 0.5): 0.0
-    let verticalOffset   = (boundingSize.height > contentSize.height) ? ((boundingSize.height - contentSize.height) * 0.5): 0.0
+    let horizontalOffset = (boundingSize.width > contentSize.width) ? ((boundingSize.width - contentSize.width) * 0.5) : 0.0
+    let verticalOffset = (boundingSize.height > contentSize.height) ? ((boundingSize.height - contentSize.height) * 0.5) : 0.0
 
     return CGPoint(x: contentSize.width * 0.5 + horizontalOffset, y: contentSize.height * 0.5 + verticalOffset)
 }
 
 func zoomRect(ForScrollView scrollView: UIScrollView, scale: CGFloat, center: CGPoint) -> CGRect {
 
-    let width = scrollView.frame.size.width  / scale
+    let width = scrollView.frame.size.width / scale
     let height = scrollView.frame.size.height / scale
     let originX = center.x - (width / 2.0)
     let originY = center.y - (height / 2.0)
@@ -85,7 +87,7 @@ func deviceRotationTransform() -> CGAffineTransform {
 }
 
 func degreesToRadians(_ degree: CGFloat) -> CGFloat {
-    return CGFloat(Double.pi) * degree / 180
+    CGFloat(Double.pi) * degree / 180
 }
 
 private func rotationAngleToMatchDeviceOrientation(_ orientation: UIDeviceOrientation) -> CGFloat {
@@ -93,10 +95,10 @@ private func rotationAngleToMatchDeviceOrientation(_ orientation: UIDeviceOrient
     var desiredRotationAngle: CGFloat = 0
 
     switch orientation {
-    case .landscapeLeft:                    desiredRotationAngle = 90
-    case .landscapeRight:                   desiredRotationAngle = -90
-    case .portraitUpsideDown:               desiredRotationAngle = 180
-    default:                                desiredRotationAngle = 0
+    case .landscapeLeft: desiredRotationAngle = 90
+    case .landscapeRight: desiredRotationAngle = -90
+    case .portraitUpsideDown: desiredRotationAngle = 180
+    default: desiredRotationAngle = 0
     }
 
     return desiredRotationAngle
@@ -109,7 +111,9 @@ func rotationAdjustedBounds() -> CGRect {
 
     if UIApplication.isPortraitOnly {
 
-        return (UIDevice.current.orientation.isLandscape) ? CGRect(origin: CGPoint.zero, size: window.bounds.size.inverted()): window.bounds
+        return (UIDevice.current.orientation.isLandscape)
+            ? CGRect(origin: CGPoint.zero, size: window.bounds.size.inverted())
+            : window.bounds
     }
 
     return window.bounds
@@ -118,7 +122,7 @@ func rotationAdjustedBounds() -> CGRect {
 func maximumZoomScale(forBoundingSize boundingSize: CGSize, contentSize: CGSize) -> CGFloat {
 
     /// we want to allow the image to always cover 4x the area of screen
-    return min(boundingSize.width, boundingSize.height) / min(contentSize.width, contentSize.height) * 4
+    min(boundingSize.width, boundingSize.height) / min(contentSize.width, contentSize.height) * 4
 }
 
 func rotationAdjustedCenter(_ view: UIView) -> CGPoint {

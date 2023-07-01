@@ -16,10 +16,15 @@ final class GalleryPagingDataSource: NSObject, UIPageViewControllerDataSource {
 
     fileprivate let configuration: GalleryConfiguration
     fileprivate var pagingMode = GalleryPagingMode.standard
-    fileprivate var itemCount: Int { return itemsDataSource?.itemCount() ?? 0 }
+    fileprivate var itemCount: Int { self.itemsDataSource?.itemCount() ?? 0 }
     fileprivate unowned var scrubber: VideoScrubber
 
-    init(itemsDataSource: GalleryItemsDataSource, displacedViewsDataSource: GalleryDisplacedViewsDataSource?, scrubber: VideoScrubber, configuration: GalleryConfiguration) {
+    init(
+        itemsDataSource: GalleryItemsDataSource,
+        displacedViewsDataSource: GalleryDisplacedViewsDataSource?,
+        scrubber: VideoScrubber,
+        configuration: GalleryConfiguration
+    ) {
 
         self.itemsDataSource = itemsDataSource
         self.displacedViewsDataSource = displacedViewsDataSource
@@ -32,19 +37,22 @@ final class GalleryPagingDataSource: NSObject, UIPageViewControllerDataSource {
 
                 switch item {
 
-                case .pagingMode(let mode): pagingMode = mode
+                case .pagingMode(let mode): self.pagingMode = mode
                 default: break
                 }
             }
         }
     }
 
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+    func pageViewController(
+        _ pageViewController: UIPageViewController,
+        viewControllerBefore viewController: UIViewController
+    ) -> UIViewController? {
 
         guard let currentController = viewController as? ItemController else { return nil }
-        let previousIndex = (currentController.index == 0) ? itemCount - 1 : currentController.index - 1
+        let previousIndex = (currentController.index == 0) ? self.itemCount - 1 : currentController.index - 1
 
-        switch pagingMode {
+        switch self.pagingMode {
 
         case .standard:
             return (currentController.index > 0) ? self.createItemController(previousIndex) : nil
@@ -54,15 +62,18 @@ final class GalleryPagingDataSource: NSObject, UIPageViewControllerDataSource {
         }
     }
 
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+    func pageViewController(
+        _ pageViewController: UIPageViewController,
+        viewControllerAfter viewController: UIViewController
+    ) -> UIViewController? {
 
-        guard let currentController = viewController as? ItemController  else { return nil }
-        let nextIndex = (currentController.index == itemCount - 1) ? 0 : currentController.index + 1
+        guard let currentController = viewController as? ItemController else { return nil }
+        let nextIndex = (currentController.index == self.itemCount - 1) ? 0 : currentController.index + 1
 
-        switch pagingMode {
+        switch self.pagingMode {
 
         case .standard:
-            return (currentController.index < itemCount - 1) ? self.createItemController(nextIndex) : nil
+            return (currentController.index < self.itemCount - 1) ? self.createItemController(nextIndex) : nil
 
         case .carousel:
             return self.createItemController(nextIndex)
@@ -71,7 +82,7 @@ final class GalleryPagingDataSource: NSObject, UIPageViewControllerDataSource {
 
     func createItemController(_ itemIndex: Int, isInitial: Bool = false) -> UIViewController {
 
-        guard let itemsDataSource = itemsDataSource else { return UIViewController() }
+        guard let itemsDataSource else { return UIViewController() }
 
         let item = itemsDataSource.provideGalleryItem(itemIndex)
 
@@ -79,27 +90,48 @@ final class GalleryPagingDataSource: NSObject, UIPageViewControllerDataSource {
 
         case .image(let fetchImageBlock):
 
-            let imageController = ImageViewController(index: itemIndex, itemCount: itemsDataSource.itemCount(), fetchImageBlock: fetchImageBlock, configuration: configuration, isInitialController: isInitial)
-            imageController.delegate = itemControllerDelegate
-            imageController.displacedViewsDataSource = displacedViewsDataSource
+            let imageController = ImageViewController(
+                index: itemIndex,
+                itemCount: itemsDataSource.itemCount(),
+                fetchImageBlock: fetchImageBlock,
+                configuration: self.configuration,
+                isInitialController: isInitial
+            )
+            imageController.delegate = self.itemControllerDelegate
+            imageController.displacedViewsDataSource = self.displacedViewsDataSource
 
             return imageController
 
         case .video(let fetchImageBlock, let fetchVideoURLBlock, let videoURL):
 
-            let videoController = VideoViewController(index: itemIndex, itemCount: itemsDataSource.itemCount(), fetchImageBlock: fetchImageBlock, fetchVideoURLBlock: fetchVideoURLBlock, videoURL: videoURL, scrubber: scrubber, configuration: configuration, isInitialController: isInitial)
+            let videoController = VideoViewController(
+                index: itemIndex,
+                itemCount: itemsDataSource.itemCount(),
+                fetchImageBlock: fetchImageBlock,
+                fetchVideoURLBlock: fetchVideoURLBlock,
+                videoURL: videoURL,
+                scrubber: self.scrubber,
+                configuration: self.configuration,
+                isInitialController: isInitial
+            )
 
-            videoController.delegate = itemControllerDelegate
-            videoController.displacedViewsDataSource = displacedViewsDataSource
+            videoController.delegate = self.itemControllerDelegate
+            videoController.displacedViewsDataSource = self.displacedViewsDataSource
 
             return videoController
 
         case .custom(let fetchImageBlock, let itemViewControllerBlock):
 
-            guard let itemController = itemViewControllerBlock(itemIndex, itemsDataSource.itemCount(), fetchImageBlock, configuration, isInitial) as? ItemController, let vc = itemController as? UIViewController else { return UIViewController() }
+            guard let itemController = itemViewControllerBlock(
+                itemIndex,
+                itemsDataSource.itemCount(),
+                fetchImageBlock,
+                configuration,
+                isInitial
+            ) as? ItemController, let vc = itemController as? UIViewController else { return UIViewController() }
 
-            itemController.delegate = itemControllerDelegate
-            itemController.displacedViewsDataSource = displacedViewsDataSource
+            itemController.delegate = self.itemControllerDelegate
+            itemController.displacedViewsDataSource = self.displacedViewsDataSource
 
             return vc
         }

@@ -6,13 +6,13 @@
 //  Copyright © 2016 MailOnline. All rights reserved.
 //
 
-import UIKit
 import AVFoundation
+import UIKit
 
 final class VideoView: UIView {
 
     let previewImageView = UIImageView()
-    var image: UIImage? { didSet { previewImageView.image = image } }
+    var image: UIImage? { didSet { self.previewImageView.image = self.image } }
     var player: AVPlayer? {
 
         willSet {
@@ -26,8 +26,9 @@ final class VideoView: UIView {
 
         didSet {
 
-            if  let player = self.player,
-                let videoLayer = self.layer as? AVPlayerLayer {
+            if let player = self.player,
+               let videoLayer = self.layer as? AVPlayerLayer
+            {
 
                 videoLayer.player = player
                 videoLayer.videoGravity = AVLayerVideoGravity.resizeAspect
@@ -39,7 +40,7 @@ final class VideoView: UIView {
     }
 
     override class var layerClass: AnyClass {
-        return AVPlayerLayer.self
+        AVPlayerLayer.self
     }
 
     convenience init() {
@@ -49,11 +50,11 @@ final class VideoView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        self.addSubview(previewImageView)
+        self.addSubview(self.previewImageView)
 
-        previewImageView.contentMode = .scaleAspectFill
-        previewImageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        previewImageView.clipsToBounds = true
+        self.previewImageView.contentMode = .scaleAspectFill
+        self.previewImageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.previewImageView.clipsToBounds = true
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -67,11 +68,16 @@ final class VideoView: UIView {
     }
 
     // swiftlint:disable:next block_based_kvo
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+    override func observeValue(
+        forKeyPath keyPath: String?,
+        of object: Any?,
+        change: [NSKeyValueChangeKey: Any]?,
+        context: UnsafeMutableRawPointer?
+    ) {
 
         if let status = self.player?.status, let rate = self.player?.rate {
 
-            if status == .readyToPlay && rate != 0 {
+            if status == .readyToPlay, rate != 0 {
 
                 UIView.animate(withDuration: 0.3, animations: { [weak self] in
 

@@ -70,7 +70,7 @@ extension CAShapeLayer {
         let circle = CAShapeLayer()
         let frame = CGRect(origin: CGPoint.zero, size: CGSize(width: diameter, height: diameter))
         circle.frame = frame
-        let circlePath   = UIBezierPath(ovalIn: frame)
+        let circlePath = UIBezierPath(ovalIn: frame)
         let trianglePath = UIBezierPath.equilateralTriangle(diameter / 2, shiftBy: CGPoint(x: diameter / 3, y: diameter / 4))
 
         circlePath.append(trianglePath)

@@ -14,7 +14,7 @@ class CounterView: UIView {
     let countLabel = UILabel()
     var currentIndex: Int {
         didSet {
-            updateLabel()
+            self.updateLabel()
         }
     }
 
@@ -25,18 +25,19 @@ class CounterView: UIView {
 
         super.init(frame: frame)
 
-        configureLabel()
-        updateLabel()
+        self.configureLabel()
+        self.updateLabel()
     }
 
+    @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     func configureLabel() {
 
-        countLabel.textAlignment = .center
-        self.addSubview(countLabel)
+        self.countLabel.textAlignment = .center
+        self.addSubview(self.countLabel)
     }
 
     func updateLabel() {
@@ -44,12 +45,18 @@ class CounterView: UIView {
         let stringTemplate = "%d of %d"
         let countString = String(format: stringTemplate, arguments: [currentIndex + 1, count])
 
-        countLabel.attributedText = NSAttributedString(string: countString, attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 17), NSAttributedString.Key.foregroundColor: UIColor.white])
+        self.countLabel.attributedText = NSAttributedString(
+            string: countString,
+            attributes: [
+                NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 17),
+                NSAttributedString.Key.foregroundColor: UIColor.white
+            ]
+        )
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        countLabel.frame = self.bounds
+        self.countLabel.frame = self.bounds
     }
 }

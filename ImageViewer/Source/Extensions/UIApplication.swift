@@ -11,7 +11,7 @@ import UIKit
 extension UIApplication {
 
     static var applicationWindow: UIWindow? {
-        guard let windowScene =  UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first else {
+        guard let windowScene = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first else {
             return nil
         }
         if #available(iOS 15.0, *) {
