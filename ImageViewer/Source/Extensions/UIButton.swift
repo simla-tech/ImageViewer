@@ -12,7 +12,7 @@ extension UIButton {
 
     static func circlePlayButton(_ diameter: CGFloat) -> UIButton {
 
-        let button = UIButton(type: .custom)
+        let button = UIButton(configuration: .plain())
         button.frame = CGRect(origin: .zero, size: CGSize(width: diameter, height: diameter))
 
         let circleImageNormal = CAShapeLayer.circlePlayShape(UIColor.white, diameter: diameter).toImage()
@@ -29,7 +29,7 @@ extension UIButton {
         let smallerEdge = min(width, height)
         let triangleEdgeLength: CGFloat = min(smallerEdge, 20)
 
-        let button = UIButton(type: .custom)
+        let button = UIButton(configuration: .plain())
         button.bounds.size = CGSize(width: width, height: height)
         button.contentHorizontalAlignment = .center
 
@@ -44,7 +44,7 @@ extension UIButton {
         let altitude = (sqrt(3) / 2) * triangleEdgeLength
         let innerCircleDiameter = (sqrt(3) / 6) * triangleEdgeLength
 
-        button.imageEdgeInsets.left = altitude / 2 - innerCircleDiameter
+        button.configuration?.contentInsets.leading = altitude / 2 - innerCircleDiameter
 
         return button
     }
@@ -54,7 +54,7 @@ extension UIButton {
         let smallerEdge = min(width, height)
         let triangleEdgeLength: CGFloat = min(smallerEdge, 20)
 
-        let button = UIButton(type: .custom)
+        let button = UIButton(configuration: .plain())
         button.bounds.size = CGSize(width: width, height: height)
         button.contentHorizontalAlignment = .center
 
@@ -69,14 +69,14 @@ extension UIButton {
         let altitude = (sqrt(3) / 2) * triangleEdgeLength
         let innerCircleDiameter = (sqrt(3) / 6) * triangleEdgeLength
 
-        button.imageEdgeInsets.left = altitude / 2 - innerCircleDiameter
+        button.configuration?.contentInsets.leading = altitude / 2 - innerCircleDiameter
 
         return button
     }
 
     static func pauseButton(width: CGFloat, height: CGFloat) -> UIButton {
 
-        let button = UIButton(type: .custom)
+        let button = UIButton(configuration: .plain())
         button.contentHorizontalAlignment = .center
 
         let elementHeight = min(20, height)
