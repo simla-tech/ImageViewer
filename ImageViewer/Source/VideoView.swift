@@ -19,8 +19,8 @@ final class VideoView: UIView {
 
             if newValue == nil {
 
-                player?.removeObserver(self, forKeyPath: "status")
-                player?.removeObserver(self, forKeyPath: "rate")
+                self.player?.removeObserver(self, forKeyPath: "status")
+                self.player?.removeObserver(self, forKeyPath: "rate")
             }
         }
 
