@@ -4,12 +4,12 @@ import ProjectDescriptionHelpers
 let project = Project(
     name: .ImageViewer,
     targets: [
-        Target(
+        .target(
             name: .ImageViewer,
             sources: "ImageViewer/Source/**",
             enableCodeLinting: false
         ),
-        Target(
+        .target(
             name: .ImageViewerTests,
             product: .unitTests,
             sources: "ImageViewerTests/**",
