@@ -10,7 +10,7 @@ import UIKit
 
 public protocol DisplaceableView {
 
-    var image: UIImage? { get }
+    @MainActor var image: UIImage? { get }
     var bounds: CGRect { get }
     var center: CGPoint { get }
     var boundsCenter: CGPoint { get }

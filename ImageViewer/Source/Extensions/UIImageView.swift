@@ -10,6 +10,7 @@ import UIKit
 
 extension DisplaceableView {
 
+    @MainActor
     func imageView() -> UIImageView {
 
         let imageView = UIImageView(image: self.image)
