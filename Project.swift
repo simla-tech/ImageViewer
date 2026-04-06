@@ -17,5 +17,5 @@ let project = Project(
             dependencies: [.target(name: .ImageViewer)]
         )
     ],
-    additionalFiles: ["README.MD", "ImageViewer.podspec"]
+    additionalFiles: ["README.md", "ImageViewer.podspec"]
 )
