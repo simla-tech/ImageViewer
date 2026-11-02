@@ -560,14 +560,14 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         // workaround to make UIPageViewController happy
         if direction == .forward {
             let previousVC = self.pagingDataSource.createItemController(index - 1)
-            setViewControllers([previousVC], direction: direction, animated: true, completion: { _ in
+            setViewControllers([previousVC], direction: direction, animated: true, completion: { [weak self] _ in
                 DispatchQueue.main.async(execute: { [weak self] in
                     self?.setViewControllers([imageViewController], direction: direction, animated: false, completion: nil)
                 })
             })
         } else {
             let nextVC = self.pagingDataSource.createItemController(index + 1)
-            setViewControllers([nextVC], direction: direction, animated: true, completion: { _ in
+            setViewControllers([nextVC], direction: direction, animated: true, completion: { [weak self] _ in
                 DispatchQueue.main.async(execute: { [weak self] in
                     self?.setViewControllers([imageViewController], direction: direction, animated: false, completion: nil)
                 })
