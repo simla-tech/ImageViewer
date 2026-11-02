@@ -1,10 +1,20 @@
 # ImageViewer
 
+## Version 6.0.5
+
+* Find first key window (#2)
+
+## Version 6.0.4
+
+* Fix statusBarHidden setting
+
+## Version 6.0.3
+
+* Ensure video scrubber takes up max width
 
 ## Version 6.0.1
 
-* Added support as Swift Package 
-
+* Added support as Swift Package
 
 ## Version 6.0.0
 
